@@ -19,21 +19,57 @@ TicTacToeBoard::TicTacToeBoard()
 **/
 Piece TicTacToeBoard::toggleTurn()
 {
-  return Invalid;
+  if(turn == X)
+  {
+      turn = O;
+      return turn;
+  }
+
+  turn = X;
+  return turn;
 }
 
 /**
  * Places the piece of the current turn on the board, returns what
- * piece is placed, and toggles which Piece's turn it is. placePiece does 
+ * piece is placed, and toggles which Piece's turn it is. placePiece does
  * NOT allow to place a piece in a location where there is already a piece.
- * In that case, placePiece just returns what is already at that location. 
+ * In that case, placePiece just returns what is already at that location.
  * Out of bounds coordinates return the Piece Invalid value. When the game
  * is over, no more pieces can be placed so attempting to place a piece
  * should neither change the board nor change whose turn it is.
-**/ 
+**/
 Piece TicTacToeBoard::placePiece(int row, int column)
 {
-  return Invalid;
+    if(getWinner() != Invalid)
+    {
+        return turn;
+    }
+
+    if(row < 0 || column < 0)
+    {
+        return Invalid;
+    }
+    else if(row > BOARDSIZE || column > BOARDSIZE)
+    {
+        return Invalid;
+    }
+
+    if(board[row][column] != Blank)
+    {
+        return board[row][column];
+    }
+
+    board[row][column] = turn;
+
+    if(getWinner() == Invalid)
+    {
+        toggleTurn();
+        return turn;
+    }
+    else
+    {
+        return turn;
+    }
 }
 
 /**
@@ -42,7 +78,15 @@ Piece TicTacToeBoard::placePiece(int row, int column)
 **/
 Piece TicTacToeBoard::getPiece(int row, int column)
 {
-  return Invalid;
+    if(row < 0 || column < 0)
+    {
+        return Invalid;
+    }
+    else if(row > BOARDSIZE || column > BOARDSIZE)
+    {
+        return Invalid;
+    }
+  return board[row][column];
 }
 
 /**
@@ -51,5 +95,64 @@ Piece TicTacToeBoard::getPiece(int row, int column)
 **/
 Piece TicTacToeBoard::getWinner()
 {
+    //Vertical
+    int i = 0;
+  for(int j=0; j<BOARDSIZE; j++)
+  {
+      if(board[i][j] == turn &&
+      board[i + 1][j] == turn &&
+      board[i + 2][j] == turn)
+      {
+          return turn;
+      }
+  }
+
+  //horizontal
+  int j = 0;
+  for(int i = 0; i < BOARDSIZE; i++)
+  {
+      if(board[i][j] == turn &&
+      board[i][j + 1] == turn &&
+      board[i][j + 2] == turn)
+      {
+          return turn;
+      }
+  }
+
+  //diagonal Right
+  if(board[0][2] == turn &&
+  board[1][1] == turn &&
+  board[2][0] == turn)
+  {
+      return turn;
+  }
+
+  //diagonal left
+  if(board[0][0] == turn &&
+  board[1][1] == turn &&
+  board[2][2] == turn)
+  {
+      return turn;
+  }
+
+  int blankSpaces = 0;
+
+  for(int i = 0; i < BOARDSIZE; i++)
+  {
+      for(int j = 0; j < BOARDSIZE; j++)
+      {
+          if(board[i][j] == Blank)
+          {
+              blankSpaces++;
+          }
+      }
+  }
+
+  if(blankSpaces == 0)
+  {
+      return Blank;
+  }
+
+
   return Invalid;
 }
